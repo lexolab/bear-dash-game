@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dino Dash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Offline-style mini game</p>
+          <h1>Dino Dash</h1>
+          <p class="lead">
+            Una landing con un runner arcade inspirado en el dinosaurio de Google:
+            salta cactus, esquiva aves y persigue tu mejor score.
+          </p>
+          <div class="hero-actions">
+            <button id="startHero" class="primary-btn">Play now</button>
+            <a href="#game" class="ghost-btn">Ver juego</a>
+          </div>
+          <ul class="feature-list">
+            <li>⚡ Arranque instantáneo</li>
+            <li>🎮 Espacio / ↑ para saltar</li>
+            <li>📱 Compatible con móvil y desktop</li>
+          </ul>
+        </div>
+        <div class="hero-card">
+          <div class="mini-score">
+            <span>HI</span>
+            <strong id="heroBest">00000</strong>
+          </div>
+          <div class="mini-track">
+            <div class="mini-dino"></div>
+            <div class="mini-cactus"></div>
+          </div>
+          <p>Tip: toca la pantalla o presiona espacio para brincar.</p>
+        </div>
+      </section>
+
+      <section id="game" class="game-section">
+        <div class="section-heading">
+          <p class="eyebrow">Play</p>
+          <h2>Beat the desert</h2>
+        </div>
+
+        <div class="hud">
+          <div>
+            <span class="hud-label">Score</span>
+            <strong id="score">00000</strong>
+          </div>
+          <div>
+            <span class="hud-label">Best</span>
+            <strong id="bestScore">00000</strong>
+          </div>
+          <button id="restartBtn" class="secondary-btn">Restart</button>
+        </div>
+
+        <div id="gameArea" class="game-area" aria-label="Dino Dash game" role="application">
+          <div class="sun"></div>
+          <div class="ground-line"></div>
+          <div id="dino" class="dino" aria-hidden="true"></div>
+          <div id="message" class="message">Press play or hit space</div>
+        </div>
+
+        <div class="controls-note">
+          <span>Desktop: <strong>Space</strong> / <strong>↑</strong></span>
+          <span>Mobile: <strong>tap</strong></span>
+        </div>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>
