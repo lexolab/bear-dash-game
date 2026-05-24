@@ -1,10 +1,10 @@
 :root {
-  --bg: #f7f3e8;
-  --sand: #efe2b9;
-  --ink: #222;
-  --accent: #ff8a00;
-  --accent-dark: #d06d00;
-  --line: #2b2b2b;
+  --bg: #ffffff;
+  --sand: #ffffff;
+  --ink: #1f1f1f;
+  --accent: #1f1f1f;
+  --accent-dark: #1f1f1f;
+  --line: #1f1f1f;
   --white: #fff;
 }
 
@@ -20,8 +20,20 @@ body {
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
   color: var(--ink);
-  background:
-    radial-gradient(circle at top, #fff7d8 0%, #f7f3e8 35%, #efe7cf 100%);
+  background: #fff;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+body.inverted {
+  --bg: #111;
+  --sand: #111;
+  --ink: #fff;
+  --accent: #fff;
+  --accent-dark: #fff;
+  --line: #fff;
+  --white: #111;
+  background: #111;
+  color: #fff;
 }
 
 .page-shell {
@@ -99,14 +111,21 @@ button:hover,
 .primary-btn {
   background: var(--accent);
   color: var(--white);
-  box-shadow: 0 10px 22px rgba(255, 138, 0, 0.3);
+  box-shadow: none;
 }
 
 .secondary-btn,
 .ghost-btn {
-  background: rgba(255, 255, 255, 0.7);
+  background: #fff;
   color: var(--ink);
-  border: 2px solid rgba(34, 34, 34, 0.12);
+  border: 2px solid rgba(34, 34, 34, 0.5);
+}
+
+body.inverted .secondary-btn,
+body.inverted .ghost-btn {
+  background: #111;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.55);
 }
 
 .feature-list {
@@ -119,11 +138,21 @@ button:hover,
 
 .hero-card,
 .game-section {
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(34, 34, 34, 0.08);
+  background: #fff;
+  border: 2px solid rgba(34, 34, 34, 0.14);
   border-radius: 28px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 40px rgba(68, 52, 20, 0.08);
+  box-shadow: none;
+}
+
+body.inverted .hero-card,
+body.inverted .game-section {
+  background: #111;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+body.inverted .primary-btn {
+  background: #fff;
+  color: #111;
 }
 
 .hero-card {
@@ -143,7 +172,20 @@ button:hover,
   margin: 18px 0;
   overflow: hidden;
   border-radius: 18px;
-  background: linear-gradient(to bottom, #fff6c9 0%, #fff0b7 58%, #f2dfb0 58%, #e6d3a0 100%);
+  background: #fff;
+}
+
+body.inverted .mini-track,
+body.inverted .game-area {
+  background: #111;
+}
+
+body.inverted .mini-dino,
+body.inverted .dino,
+body.inverted .mini-cactus,
+body.inverted .obstacle,
+body.inverted .bird {
+  filter: brightness(0) invert(1) contrast(3);
 }
 
 .mini-track::after {
@@ -152,8 +194,14 @@ button:hover,
   left: 0;
   right: 0;
   bottom: 42px;
-  height: 4px;
+  height: 3px;
   background: var(--line);
+}
+
+.mini-hill,
+.hill-one,
+.hill-two {
+  display: none;
 }
 
 .mini-dino,
@@ -167,76 +215,43 @@ button:hover,
 
 .mini-dino,
 .dino {
-  width: 44px;
-  height: 48px;
-  background: var(--line);
-  border-radius: 6px 6px 6px 2px;
-}
-
-.mini-dino::before,
-.dino::before {
-  content: '';
-  position: absolute;
-  width: 16px;
-  height: 14px;
-  background: var(--line);
-  left: 24px;
-  top: -8px;
-  border-radius: 3px;
-}
-
-.mini-dino::after,
-.dino::after {
-  content: '';
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: var(--white);
-  top: 10px;
-  right: 7px;
-  border-radius: 50%;
-  box-shadow: inset 2px 0 0 0 var(--line);
+  background-repeat: no-repeat;
+  background-position: center;
+  transform-origin: center bottom;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .mini-dino {
-  left: 36px;
-  bottom: 46px;
+  background-image: url('./bear-sprite-mini.png');
+  background-size: 78px 68px;
+}
+
+.mini-dino {
+  width: 92px;
+  height: 80px;
+  left: 20px;
+  bottom: 42px;
+  background-size: 92px 80px;
+  filter: brightness(0) saturate(0) contrast(3);
   animation: miniHop 1.2s ease-in-out infinite;
 }
 
 .mini-cactus {
-  width: 22px;
-  height: 48px;
-  right: 42px;
-  bottom: 46px;
-  background: #2f7a31;
-  border-radius: 4px;
+  width: 40px;
+  height: 62px;
+  right: 36px;
+  bottom: 42px;
+  background: url('./trash-sprite.png') center bottom / 40px 62px no-repeat;
 }
 
 .mini-cactus::before,
 .mini-cactus::after,
 .obstacle::before,
 .obstacle::after {
+  display: none;
   content: '';
   position: absolute;
-  background: inherit;
-  border-radius: 4px;
-}
-
-.mini-cactus::before,
-.obstacle::before {
-  width: 10px;
-  height: 16px;
-  left: -7px;
-  top: 16px;
-}
-
-.mini-cactus::after,
-.obstacle::after {
-  width: 10px;
-  height: 18px;
-  right: -7px;
-  top: 10px;
 }
 
 @keyframes miniHop {
@@ -266,7 +281,7 @@ button:hover,
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: #7e6e48;
+  color: #666;
   margin-bottom: 6px;
 }
 
@@ -276,19 +291,15 @@ button:hover,
   min-height: 280px;
   overflow: hidden;
   border-radius: 24px;
-  border: 3px solid rgba(34, 34, 34, 0.1);
-  background: linear-gradient(to bottom, #fff8d8 0%, #fff0b5 56%, #efdca7 56%, #e6cf98 100%);
+  border: 2px solid rgba(34, 34, 34, 0.18);
+  background: #fff;
 }
 
-.sun {
-  position: absolute;
-  top: 28px;
-  right: 38px;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  background: #ffd35a;
-  box-shadow: 0 0 0 10px rgba(255, 211, 90, 0.18);
+.sun,
+.moon,
+.mountain,
+.pine {
+  display: none;
 }
 
 .ground-line {
@@ -296,56 +307,75 @@ button:hover,
   left: 0;
   right: 0;
   bottom: 56px;
-  height: 5px;
+  height: 3px;
   background: var(--line);
 }
 
 .dino {
-  left: 60px;
+  width: 138px;
+  height: 120px;
+  left: 18px;
   bottom: 61px;
+  background-image: url('./bear-sprite-game.png');
+  background-size: 138px 120px;
+  filter: brightness(0) saturate(0) contrast(3);
+}
+
+.dino::after {
+  display: none;
+  content: '';
 }
 
 .dino.running {
-  animation: dinoRun 0.18s steps(2) infinite;
+  animation: dinoRun 0.22s ease-in-out infinite;
+}
+
+.dino.running::after {
+  animation: dustTrail 0.22s ease-in-out infinite;
 }
 
 .dino.jumping {
   animation: none;
 }
 
+.dino.jumping::after {
+  opacity: 0;
+  animation: none;
+}
+
 @keyframes dinoRun {
   0%, 100% { transform: translateY(0) scaleX(1); }
-  50% { transform: translateY(-2px) scaleX(0.98); }
+  50% { transform: translateY(-2px) scaleX(0.99); }
+}
+
+@keyframes dustTrail {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0; }
 }
 
 .obstacle {
-  width: 24px;
-  height: 54px;
+  width: 56px;
+  height: 92px;
   bottom: 61px;
-  background: #2f7a31;
-  border-radius: 4px;
+  background: url('./trash-sprite.png') center bottom / 56px 92px no-repeat;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .bird {
-  width: 40px;
-  height: 18px;
-  background: #4f4f4f;
-  border-radius: 12px 12px 4px 4px;
+  width: 52px;
+  height: 30px;
+  background: url('./bee-sprite.png') center bottom / 52px 30px no-repeat;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .bird::before,
 .bird::after {
+  display: none;
   content: '';
   position: absolute;
-  width: 18px;
-  height: 8px;
-  top: -6px;
-  background: #636363;
-  border-radius: 16px 16px 0 0;
 }
-
-.bird::before { left: 0; transform: rotate(-14deg); }
-.bird::after { right: 0; transform: rotate(14deg); }
 
 .message {
   position: absolute;
@@ -354,6 +384,24 @@ button:hover,
   font-size: clamp(0.72rem, 2vw, 1rem);
   line-height: 1.6;
   color: rgba(34, 34, 34, 0.9);
+}
+
+body.inverted .message,
+body.inverted .hud-label,
+body.inverted .controls-note,
+body.inverted .eyebrow,
+body.inverted .lead,
+body.inverted .feature-list,
+body.inverted .mini-score,
+body.inverted h1,
+body.inverted h2,
+body.inverted .hud strong,
+body.inverted a,
+body.inverted p,
+body.inverted span,
+body.inverted li,
+body.inverted strong {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .controls-note {
@@ -380,7 +428,16 @@ button:hover,
     padding: 20px;
   }
 
+  .mini-dino {
+    width: 78px;
+    height: 68px;
+    background-size: 78px 68px;
+  }
+
   .dino {
-    left: 38px;
+    width: 112px;
+    height: 98px;
+    left: 12px;
+    background-size: 112px 98px;
   }
 }

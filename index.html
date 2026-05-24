@@ -17,10 +17,9 @@
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">Offline-style mini game</p>
-          <h1>Dino Dash</h1>
+          <h1>Bear Dash</h1>
           <p class="lead">
-            Una landing con un runner arcade inspirado en el dinosaurio de Google:
-            salta cactus, esquiva aves y persigue tu mejor score.
+            Versión minimalista inspirada en el juego offline de Google: fondo blanco, siluetas negras y un oso que corre sin parar.
           </p>
           <div class="hero-actions">
             <button id="startHero" class="primary-btn">Play now</button>
@@ -38,6 +37,8 @@
             <strong id="heroBest">00000</strong>
           </div>
           <div class="mini-track">
+            <div class="mini-hill hill-one"></div>
+            <div class="mini-hill hill-two"></div>
             <div class="mini-dino"></div>
             <div class="mini-cactus"></div>
           </div>
@@ -48,7 +49,7 @@
       <section id="game" class="game-section">
         <div class="section-heading">
           <p class="eyebrow">Play</p>
-          <h2>Beat the desert</h2>
+          <h2>Beat the run</h2>
         </div>
 
         <div class="hud">
@@ -63,8 +64,12 @@
           <button id="restartBtn" class="secondary-btn">Restart</button>
         </div>
 
-        <div id="gameArea" class="game-area" aria-label="Dino Dash game" role="application">
-          <div class="sun"></div>
+        <div id="gameArea" class="game-area" aria-label="Bear Dash game" role="application">
+          <div class="sun moon"></div>
+          <div class="mountain mountain-one"></div>
+          <div class="mountain mountain-two"></div>
+          <div class="pine pine-one"></div>
+          <div class="pine pine-two"></div>
           <div class="ground-line"></div>
           <div id="dino" class="dino" aria-hidden="true"></div>
           <div id="message" class="message">Press play or hit space</div>

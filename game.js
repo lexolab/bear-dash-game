@@ -22,9 +22,85 @@ let speed = 7;
 let verticalVelocity = 0;
 let dinoY = 0;
 let obstacles = [];
+let colorsInverted = false;
+let audioContext = null;
+let audioUnlocked = false;
 
 function formatScore(value) {
   return String(Math.floor(value)).padStart(5, '0');
+}
+
+function ensureAudioContext() {
+  if (!audioContext) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return null;
+    audioContext = new AudioCtx();
+  }
+  return audioContext;
+}
+
+function unlockAudio() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+
+  if (ctx.state === 'suspended') {
+    ctx.resume();
+  }
+
+  if (!audioUnlocked) {
+    const buffer = ctx.createBuffer(1, 1, 22050);
+    const source = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    gain.gain.value = 0.0001;
+    source.buffer = buffer;
+    source.connect(gain);
+    gain.connect(ctx.destination);
+    source.start(0);
+    audioUnlocked = true;
+  }
+}
+
+function playJumpSound() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  unlockAudio();
+
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(520, ctx.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(760, ctx.currentTime + 0.09);
+  gain.gain.setValueAtTime(0.001, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.14);
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+  oscillator.start(ctx.currentTime);
+  oscillator.stop(ctx.currentTime + 0.14);
+}
+
+function playCrashSound() {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  unlockAudio();
+
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  oscillator.type = 'sawtooth';
+  oscillator.frequency.setValueAtTime(280, ctx.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.22);
+  gain.gain.setValueAtTime(0.001, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.14, ctx.currentTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.24);
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+  oscillator.start(ctx.currentTime);
+  oscillator.stop(ctx.currentTime + 0.24);
+}
+
+function setInvertedColors(enabled) {
+  colorsInverted = enabled;
+  document.body.classList.toggle('inverted', enabled);
 }
 
 function syncBestScore() {
@@ -41,6 +117,7 @@ function resetGameState() {
   verticalVelocity = 0;
   dinoY = 0;
   lastTimestamp = 0;
+  setInvertedColors(false);
   scoreEl.textContent = formatScore(score);
   dino.style.bottom = `${groundOffset}px`;
   dino.classList.add('running');
@@ -67,6 +144,7 @@ function startGame() {
 function endGame() {
   gameRunning = false;
   dino.classList.remove('running');
+  playCrashSound();
   cancelAnimationFrame(animationId);
   if (score > bestScore) {
     bestScore = Math.floor(score);
@@ -87,6 +165,7 @@ function jump() {
   if (dinoY > 0) return;
   verticalVelocity = jumpForce;
   dino.classList.add('jumping');
+  playJumpSound();
 }
 
 function spawnObstacle() {
@@ -94,11 +173,18 @@ function spawnObstacle() {
   const el = document.createElement('div');
   el.className = kind === 'cactus' ? 'obstacle' : 'bird';
   const areaWidth = gameArea.clientWidth;
-  const y = kind === 'cactus' ? groundOffset : groundOffset + (Math.random() < 0.5 ? 45 : 76);
+  const y = kind === 'cactus' ? groundOffset : groundOffset + (Math.random() < 0.5 ? 58 : 96);
   el.style.left = `${areaWidth + 20}px`;
   el.style.bottom = `${y}px`;
   gameArea.appendChild(el);
-  obstacles.push({ el, x: areaWidth + 20, width: kind === 'cactus' ? 24 : 40, height: kind === 'cactus' ? 54 : 18, y, kind });
+  obstacles.push({
+    el,
+    x: areaWidth + 20,
+    width: kind === 'cactus' ? 56 : 52,
+    height: kind === 'cactus' ? 92 : 30,
+    y,
+    kind,
+  });
 }
 
 function updateDino() {
@@ -113,11 +199,15 @@ function updateDino() {
 }
 
 function getDinoRect() {
+  const width = dino.offsetWidth;
+  const height = dino.offsetHeight;
+  const left = dino.offsetLeft;
+
   return {
-    left: 60,
-    right: 96,
-    top: gameArea.clientHeight - groundOffset - dinoY - 48,
-    bottom: gameArea.clientHeight - groundOffset - dinoY,
+    left: left + width * 0.2,
+    right: left + width * 0.78,
+    top: gameArea.clientHeight - groundOffset - dinoY - height + 12,
+    bottom: gameArea.clientHeight - groundOffset - dinoY - 6,
   };
 }
 
@@ -128,11 +218,14 @@ function collides(obstacle) {
   const obstacleTop = gameArea.clientHeight - obstacle.y - obstacle.height;
   const obstacleBottom = gameArea.clientHeight - obstacle.y;
 
+  const beePadding = obstacle.kind === 'bird' ? 10 : 4;
+  const trashPadding = obstacle.kind === 'cactus' ? 6 : 0;
+
   return (
-    dinoRect.left + 6 < obstacleRight &&
-    dinoRect.right - 6 > obstacleLeft &&
-    dinoRect.top + 6 < obstacleBottom &&
-    dinoRect.bottom - 4 > obstacleTop
+    dinoRect.left + 6 < obstacleRight - beePadding &&
+    dinoRect.right - 6 > obstacleLeft + beePadding &&
+    dinoRect.top + 6 < obstacleBottom - trashPadding &&
+    dinoRect.bottom - 4 > obstacleTop + (obstacle.kind === 'bird' ? 4 : 8)
   );
 }
 
@@ -142,6 +235,7 @@ function updateObstacles(delta) {
     obstacle.el.style.left = `${obstacle.x}px`;
 
     if (collides(obstacle)) {
+      obstacle.el.remove();
       endGame();
       return false;
     }
@@ -174,6 +268,10 @@ function gameLoop(timestamp) {
   speed = Math.min(15, 7 + score / 180);
   scoreEl.textContent = formatScore(score);
 
+  if (!colorsInverted && Math.floor(score) >= 1000) {
+    setInvertedColors(true);
+  }
+
   updateDino();
   updateObstacles(delta);
   maybeSpawn(delta);
@@ -182,6 +280,7 @@ function gameLoop(timestamp) {
 }
 
 function handleAction(event) {
+  unlockAudio();
   if (event.type === 'keydown') {
     if (!['Space', 'ArrowUp'].includes(event.code)) return;
     event.preventDefault();
