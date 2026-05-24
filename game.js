@@ -8,8 +8,13 @@ const restartBtn = document.getElementById('restartBtn');
 const startHeroBtn = document.getElementById('startHero');
 
 const groundOffset = 61;
-const gravity = 0.9;
-const jumpForce = 16.5;
+const gravity = 0.86;
+const jumpForce = 17.2;
+const obstacleWidth = 44;
+const obstacleHeight = 72;
+const birdWidth = 52;
+const birdHeight = 30;
+const birdHeightOffset = 72;
 
 let animationId = null;
 let gameRunning = false;
@@ -169,19 +174,19 @@ function jump() {
 }
 
 function spawnObstacle() {
-  const kind = Math.random() < 0.78 ? 'cactus' : 'bird';
+  const kind = Math.random() < 0.84 ? 'cactus' : 'bird';
   const el = document.createElement('div');
   el.className = kind === 'cactus' ? 'obstacle' : 'bird';
   const areaWidth = gameArea.clientWidth;
-  const y = kind === 'cactus' ? groundOffset : groundOffset + (Math.random() < 0.5 ? 58 : 96);
+  const y = kind === 'cactus' ? groundOffset : groundOffset + birdHeightOffset;
   el.style.left = `${areaWidth + 20}px`;
   el.style.bottom = `${y}px`;
   gameArea.appendChild(el);
   obstacles.push({
     el,
     x: areaWidth + 20,
-    width: kind === 'cactus' ? 56 : 52,
-    height: kind === 'cactus' ? 92 : 30,
+    width: kind === 'cactus' ? obstacleWidth : birdWidth,
+    height: kind === 'cactus' ? obstacleHeight : birdHeight,
     y,
     kind,
   });
@@ -218,8 +223,8 @@ function collides(obstacle) {
   const obstacleTop = gameArea.clientHeight - obstacle.y - obstacle.height;
   const obstacleBottom = gameArea.clientHeight - obstacle.y;
 
-  const beePadding = obstacle.kind === 'bird' ? 10 : 4;
-  const trashPadding = obstacle.kind === 'cactus' ? 6 : 0;
+  const beePadding = obstacle.kind === 'bird' ? 12 : 4;
+  const trashPadding = obstacle.kind === 'cactus' ? 10 : 0;
 
   return (
     dinoRect.left + 6 < obstacleRight - beePadding &&
@@ -251,7 +256,7 @@ function updateObstacles(delta) {
 
 function maybeSpawn(delta) {
   spawnTimer += delta;
-  const threshold = Math.max(700, 1450 - speed * 65 - Math.random() * 260);
+  const threshold = Math.max(980, 1750 - speed * 55 - Math.random() * 180);
   if (spawnTimer >= threshold) {
     spawnObstacle();
     spawnTimer = 0;
@@ -265,7 +270,7 @@ function gameLoop(timestamp) {
   lastTimestamp = timestamp;
 
   score += delta * 0.02;
-  speed = Math.min(15, 7 + score / 180);
+  speed = Math.min(12, 6.2 + score / 240);
   scoreEl.textContent = formatScore(score);
 
   if (!colorsInverted && Math.floor(score) >= 1000) {

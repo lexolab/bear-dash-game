@@ -238,11 +238,11 @@ body.inverted .bird {
 }
 
 .mini-cactus {
-  width: 40px;
-  height: 62px;
+  width: 32px;
+  height: 50px;
   right: 36px;
   bottom: 42px;
-  background: url('./trash-sprite.png') center bottom / 40px 62px no-repeat;
+  background: url('./trash-sprite.png') center bottom / 32px 50px no-repeat;
 }
 
 .mini-cactus::before,
@@ -354,10 +354,10 @@ body.inverted .bird {
 }
 
 .obstacle {
-  width: 56px;
-  height: 92px;
+  width: 44px;
+  height: 72px;
   bottom: 61px;
-  background: url('./trash-sprite.png') center bottom / 56px 92px no-repeat;
+  background: url('./trash-sprite.png') center bottom / 44px 72px no-repeat;
   border-radius: 0;
   box-shadow: none;
 }
