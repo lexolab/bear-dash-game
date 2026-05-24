@@ -8,13 +8,13 @@ const restartBtn = document.getElementById('restartBtn');
 const startHeroBtn = document.getElementById('startHero');
 
 const groundOffset = 61;
-const gravity = 0.86;
-const jumpForce = 17.2;
-const obstacleWidth = 44;
-const obstacleHeight = 72;
-const birdWidth = 52;
-const birdHeight = 30;
-const birdHeightOffset = 72;
+const gravity = 0.82;
+const jumpForce = 18.2;
+const obstacleWidth = 40;
+const obstacleHeight = 64;
+const birdWidth = 48;
+const birdHeight = 28;
+const birdHeightOffset = 78;
 
 let animationId = null;
 let gameRunning = false;
@@ -174,7 +174,7 @@ function jump() {
 }
 
 function spawnObstacle() {
-  const kind = Math.random() < 0.84 ? 'cactus' : 'bird';
+  const kind = Math.random() < 0.88 ? 'cactus' : 'bird';
   const el = document.createElement('div');
   el.className = kind === 'cactus' ? 'obstacle' : 'bird';
   const areaWidth = gameArea.clientWidth;
@@ -223,8 +223,8 @@ function collides(obstacle) {
   const obstacleTop = gameArea.clientHeight - obstacle.y - obstacle.height;
   const obstacleBottom = gameArea.clientHeight - obstacle.y;
 
-  const beePadding = obstacle.kind === 'bird' ? 12 : 4;
-  const trashPadding = obstacle.kind === 'cactus' ? 10 : 0;
+  const beePadding = obstacle.kind === 'bird' ? 14 : 4;
+  const trashPadding = obstacle.kind === 'cactus' ? 14 : 0;
 
   return (
     dinoRect.left + 6 < obstacleRight - beePadding &&
@@ -256,7 +256,7 @@ function updateObstacles(delta) {
 
 function maybeSpawn(delta) {
   spawnTimer += delta;
-  const threshold = Math.max(980, 1750 - speed * 55 - Math.random() * 180);
+  const threshold = Math.max(1180, 2050 - speed * 45 - Math.random() * 140);
   if (spawnTimer >= threshold) {
     spawnObstacle();
     spawnTimer = 0;
@@ -270,7 +270,7 @@ function gameLoop(timestamp) {
   lastTimestamp = timestamp;
 
   score += delta * 0.02;
-  speed = Math.min(12, 6.2 + score / 240);
+  speed = Math.min(10.4, 5.8 + score / 320);
   scoreEl.textContent = formatScore(score);
 
   if (!colorsInverted && Math.floor(score) >= 1000) {
